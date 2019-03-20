@@ -576,9 +576,15 @@ export default class ImageViewer extends React.Component<Props, State> {
     });
 
     return (
+<<<<<<< HEAD
       <SafeAreaView style={{ backgroundColor: 'orange', flex: 1 }}>
         <Animated.View style={{ zIndex: 9 }}>
           <Animated.View style={{ ...this.styles.container, opacity: this.fadeAnim }}>
+=======
+      <Animated.View style={{ zIndex: 9 }}>
+        <Animated.View style={{ ...this.styles.container, opacity: this.fadeAnim }}>
+          <SafeAreaView style={{backgroundColor: 'orange', flex: 1}}>
+>>>>>>> 3405f6f56eca1b475a1d2b5e81554cee7ef4dd47
             {this!.props!.renderHeader!(this.state.currentShowIndex)}
 
             <View style={this.styles.arrowLeftContainer}>
