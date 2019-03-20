@@ -13,7 +13,8 @@ import {
   TouchableOpacity,
   TouchableWithoutFeedback,
   View,
-  ViewStyle
+  ViewStyle,
+  SafeAreaView
 } from 'react-native';
 import ImageZoom from 'react-native-image-pan-zoom';
 import styles from './image-viewer.style';
@@ -180,9 +181,9 @@ export default class ImageViewer extends React.Component<Props, State> {
     }
 
     // 如果已知源图片宽高，直接设置为 success
-    if (image.width && image.height){
-      if(this.props.enablePreload && imageLoaded===false){
-        Image.prefetch(image.url)
+    if (image.width && image.height) {
+      if (this.props.enablePreload && imageLoaded === false) {
+        Image.prefetch(image.url);
       }
       imageStatus.width = image.width;
       imageStatus.height = image.height;
@@ -215,13 +216,13 @@ export default class ImageViewer extends React.Component<Props, State> {
   }
 
   /**
-  * 预加载图片
-  */
-  public preloadImage = (index: number) =>{
-    if (index < this.state.imageSizes!.length){
+   * 预加载图片
+   */
+  public preloadImage = (index: number) => {
+    if (index < this.state.imageSizes!.length) {
       this.loadImage(index + 1);
     }
-  }
+  };
   /**
    * 触发溢出水平滚动
    */
@@ -524,8 +525,8 @@ export default class ImageViewer extends React.Component<Props, State> {
               ...image.props.source
             };
           }
-          if (this.props.enablePreload){
-            this.preloadImage(this.state.currentShowIndex||0)
+          if (this.props.enablePreload) {
+            this.preloadImage(this.state.currentShowIndex || 0);
           }
           return (
             <ImageZoom
@@ -575,47 +576,49 @@ export default class ImageViewer extends React.Component<Props, State> {
     });
 
     return (
-      <Animated.View style={{ zIndex: 9 }}>
-        <Animated.View style={{ ...this.styles.container, opacity: this.fadeAnim }}>
-          {this!.props!.renderHeader!(this.state.currentShowIndex)}
+      <SafeAreaView style={{ backgroundColor: 'orange', flex: 1 }}>
+        <Animated.View style={{ zIndex: 9 }}>
+          <Animated.View style={{ ...this.styles.container, opacity: this.fadeAnim }}>
+            {this!.props!.renderHeader!(this.state.currentShowIndex)}
 
-          <View style={this.styles.arrowLeftContainer}>
-            <TouchableWithoutFeedback onPress={this.goBack}>
-              <View>{this!.props!.renderArrowLeft!()}</View>
-            </TouchableWithoutFeedback>
-          </View>
+            <View style={this.styles.arrowLeftContainer}>
+              <TouchableWithoutFeedback onPress={this.goBack}>
+                <View>{this!.props!.renderArrowLeft!()}</View>
+              </TouchableWithoutFeedback>
+            </View>
 
-          <View style={this.styles.arrowRightContainer}>
-            <TouchableWithoutFeedback onPress={this.goNext}>
-              <View>{this!.props!.renderArrowRight!()}</View>
-            </TouchableWithoutFeedback>
-          </View>
+            <View style={this.styles.arrowRightContainer}>
+              <TouchableWithoutFeedback onPress={this.goNext}>
+                <View>{this!.props!.renderArrowRight!()}</View>
+              </TouchableWithoutFeedback>
+            </View>
 
-          <Animated.View
-            style={{
-              ...this.styles.moveBox,
-              transform: [{ translateX: this.positionX }],
-              width: this.width * this.props.imageUrls.length
-            }}
-          >
-            {ImageElements}
+            <Animated.View
+              style={{
+                ...this.styles.moveBox,
+                transform: [{ translateX: this.positionX }],
+                width: this.width * this.props.imageUrls.length
+              }}
+            >
+              {ImageElements}
+            </Animated.View>
+            {this!.props!.renderIndicator!((this.state.currentShowIndex || 0) + 1, this.props.imageUrls.length)}
+
+            {this.props.imageUrls[this.state.currentShowIndex || 0] &&
+              this.props.imageUrls[this.state.currentShowIndex || 0].originSizeKb &&
+              this.props.imageUrls[this.state.currentShowIndex || 0].originUrl && (
+                <View style={this.styles.watchOrigin}>
+                  <TouchableOpacity style={this.styles.watchOriginTouchable}>
+                    <Text style={this.styles.watchOriginText}>查看原图(2M)</Text>
+                  </TouchableOpacity>
+                </View>
+              )}
+            <View style={[{ bottom: 0, position: 'absolute', zIndex: 9 }, this.props.footerContainerStyle]}>
+              {this!.props!.renderFooter!(this.state.currentShowIndex)}
+            </View>
           </Animated.View>
-          {this!.props!.renderIndicator!((this.state.currentShowIndex || 0) + 1, this.props.imageUrls.length)}
-
-          {this.props.imageUrls[this.state.currentShowIndex || 0] &&
-            this.props.imageUrls[this.state.currentShowIndex || 0].originSizeKb &&
-            this.props.imageUrls[this.state.currentShowIndex || 0].originUrl && (
-              <View style={this.styles.watchOrigin}>
-                <TouchableOpacity style={this.styles.watchOriginTouchable}>
-                  <Text style={this.styles.watchOriginText}>查看原图(2M)</Text>
-                </TouchableOpacity>
-              </View>
-            )}
-          <View style={[{ bottom: 0, position: 'absolute', zIndex: 9 }, this.props.footerContainerStyle]}>
-            {this!.props!.renderFooter!(this.state.currentShowIndex)}
-          </View>
         </Animated.View>
-      </Animated.View>
+      </SafeAreaView>
     );
   }
 
